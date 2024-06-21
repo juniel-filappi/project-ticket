@@ -1,0 +1,63 @@
+@baseUrl = http://localhost:3000
+
+GET {{ baseUrl }}/events
+
+###
+# @name createEvent
+POST {{ baseUrl }}/events
+Content-Type: application/json
+
+{
+  "name": "event name",
+  "description": "event description",
+  "date": "2020-12-31T00:00:00",
+  "price": 100
+}
+
+> {%
+ client.global.set("eventId", response.body.id);
+ %}
+
+###
+GET {{ baseUrl }}/events/{{ eventId }}
+
+###
+PATCH {{ baseUrl }}/events/{{ eventId }}
+Content-Type: application/json
+
+{
+  "name": "event name",
+  "description": "event description",
+  "date": "2020-12-31T00:00:00",
+  "price": 100
+}
+
+###
+DELETE {{ baseUrl }}/events/{{ eventId }}
+
+###
+GET {{ baseUrl }}/events/{{ eventId }}/spots
+
+###
+# @name createSpot
+POST {{ baseUrl }}/events/{{ eventId }}/spots
+Content-Type: application/json
+
+{
+  "name": "A3"
+}
+
+> {%
+ client.global.set("spotName", response.body.name);
+ %}
+
+###
+POST {{ baseUrl }}/events/{{ eventId }}/reserve
+Content-Type: application/json
+X-Api-Token: 123
+
+{
+  "spots": ["{{ spotName }}"],
+  "ticket_kind": "full",
+  "email": "teste@teste.com"
+}
